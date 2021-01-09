@@ -7,9 +7,9 @@ from keras.utils import to_categorical
 import os
 
 # dev, For using GPU for training
-# gpus = tf.config.experimental.list_physical_devices(device_type="GPU")
-# for gpu in gpus:
-#     tf.config.experimental.set_memory_growth(gpu, True)
+gpus = tf.config.experimental.list_physical_devices(device_type="GPU")
+for gpu in gpus:
+    tf.config.experimental.set_memory_growth(gpu, True)
 
 
 def Load_data(directory):
@@ -59,38 +59,28 @@ def Train():
     # Where n is the number of images, 28*28 is number of pixels
     # , and 3 is the number of color channels of an RGB image
     # uncomment next line
-    # loaded_imgs, loaded_lbls = Load_data("./trainingSet")
+    # x_train, y_train = Load_data("./trainingSet")
 
     # dev
-    loaded_imgs = np.load("./imgs.npy")
-    loaded_lbls = np.load("./lbls.npy")
-    # cv2.imshow("ho", loaded_imgs[0])
-    # cv2.waitKey(0)
+    x_train = np.load("./imgs.npy")
+    y_train = np.load("./lbls.npy")
 
-    # Divide into train/test sets with 98%/2% split
-    numTrain = int(len(loaded_imgs) * 0.98)
-    numTest = len(loaded_imgs) - numTrain
+    # Shuffling the data
+    x_train, y_train = shuffle(x_train, y_train)
 
-    x_train = loaded_imgs[:]
-    y_train = loaded_lbls[:]
-
-    x_test = loaded_imgs[:numTest]
-    # y_test = loaded_lbls[:numTest]
 
     # Normalizing the pixels
     x_train = x_train / 255
-    # x_test = x_test / 255
 
     # Use One-Hot encoding for labels
     y_train_one_hot = to_categorical(y_train, num_classes=10, dtype=np.uint8)
-    # y_test_one_hot = to_categorical(y_test, num_classes=10, dtype=np.uint8)
 
     # Building the model
     model = keras.Sequential(
         [
-            keras.layers.Conv2D(28, (4, 4), activation="relu", input_shape=(28, 28, 3)),
+            keras.layers.Conv2D(28, (5, 5), activation="relu", input_shape=(28, 28, 3)),
             keras.layers.MaxPool2D((2, 2)),
-            keras.layers.Conv2D(64, (4, 4), activation="relu"),
+            keras.layers.Conv2D(64, (5, 5), activation="relu"),
             keras.layers.Flatten(),
             keras.layers.Dense(1000, activation="relu"),
             keras.layers.Dropout(0.5),
@@ -108,11 +98,22 @@ def Train():
         loss="categorical_crossentropy", optimizer="adam", metrics=["accuracy"]
     )
 
+    # Printing the model summary
+    model.summary()
+    
+    # BONUS1, tensorboard
+    tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir="./logs")
+
     # training the model
-    model.fit(x_train, y_train_one_hot, batch_size=256, epochs=80, validation_split=0.2)
+    model.fit(x_train, y_train_one_hot, batch_size=256, epochs=80, validation_split=0.02, callbacks=[tensorboard_callback])
 
     # Saving the model
-    model.save("./trained", overwrite=False, save_format="h5")
+    model.save("./trainedmodel.h5", overwrite=False, save_format="h5")
+
+
+def shuffle(a, b):
+    p = np.random.permutation(len(a))
+    return a[p], b[p]
 
 
 Train()
