@@ -68,7 +68,6 @@ def Train():
     # Shuffling the data
     x_train, y_train = shuffle(x_train, y_train)
 
-
     # Normalizing the pixels
     x_train = x_train / 255
 
@@ -78,6 +77,7 @@ def Train():
     # Building the model
     model = keras.Sequential(
         [
+            keras.layers.experimental.preprocessing.Resizing(28, 28, interpolation='bilinear'),
             keras.layers.Conv2D(28, (5, 5), activation="relu", input_shape=(28, 28, 3)),
             keras.layers.MaxPool2D((2, 2)),
             keras.layers.Conv2D(64, (5, 5), activation="relu"),
@@ -98,14 +98,21 @@ def Train():
         loss="categorical_crossentropy", optimizer="adam", metrics=["accuracy"]
     )
 
-    # Printing the model summary
-    model.summary()
-    
     # BONUS1, tensorboard
     tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir="./logs")
 
     # training the model
-    model.fit(x_train, y_train_one_hot, batch_size=256, epochs=80, validation_split=0.02, callbacks=[tensorboard_callback])
+    model.fit(
+        x_train,
+        y_train_one_hot,
+        batch_size=256,
+        epochs=80,
+        validation_split=0.02,
+        callbacks=[tensorboard_callback],
+    )
+
+    # Printing the model summary
+    model.summary()
 
     # Saving the model
     model.save("./trainedmodel.h5", overwrite=False, save_format="h5")

@@ -22,7 +22,7 @@ model = None
 try:
 
     # Try to load pretrained model, if not found, train the model and save it.
-    model = keras.models.load_model("./5_5_shuffled.h5")
+    model = keras.models.load_model("./trainedmodel.h5")
 
     # Printing the model summary
     # model.summary(print_fn=printInColor)
