@@ -1,5 +1,1 @@
-trainingSet/
-logs/
-*.h5
-trainingSet.tar.gz
-*.npy
+dockerfiles/*.temp.Dockerfile
