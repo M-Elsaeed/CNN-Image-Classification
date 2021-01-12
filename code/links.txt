@@ -1,3 +1,0 @@
-https://randerson112358.medium.com/classify-images-using-convolutional-neural-networks-python-a89cecc8c679
-https://miro.medium.com/max/963/1*KutnZOXSPRk4R4-hlL_8yA.png
-https://s3.amazonaws.com/assets.datacamp.com/blog_assets/Numpy_Python_Cheat_Sheet.pdf
