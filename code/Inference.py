@@ -1,11 +1,11 @@
-import numpy as np
-import tensorflow as tf
-from tensorflow import keras
-from cv2 import cv2
 import sys
 import platform
+import numpy as np
+from cv2 import cv2
+import tensorflow as tf
+from tensorflow import keras
 
-rootDir = "/home/16p8160"
+rootDir = "/home"
 
 # If running on Windows (GPU used, and using relative paths instead of absolute)
 if platform.system() == "Windows":
@@ -14,7 +14,7 @@ if platform.system() == "Windows":
     for gpu in gpus:
         tf.config.experimental.set_memory_growth(gpu, True)
     # Use relative path if Windows is used (or not using docker)
-    rootDir = "./project"
+    rootDir = "./code"
 
 
 # For colored priniting
@@ -34,17 +34,24 @@ try:
     # Printing the model summary
     # model.summary(print_fn=printInColor)
 
-    # Printing Trained Parameters, w and b
-    printInColor(f"Trained Parameters: {model.get_weights()}")
+    # Printing Model's Summary
+    model.summary(print_fn=printInColor)
 
-    # Taking the value to predict as input from the user
-    imPath = input(f"\033[92mEnter The Path to the image you want to predict\n\033[0m")
+    # Taking the image's path to predict as argument from CLI (for docker)
+    # OR Taking the image's path to predict as input from the user
+    print(sys.argv)
+    imPath = None
+    if len(sys.argv) > 1:
+        imPath = sys.argv[1]
+    else:
+        imPath = input(f"\033[92mEnter The Path to the image you want to predict\n\033[0m")
 
     x_to_predict = np.array([cv2.imread(imPath)])
     print(x_to_predict.shape)
 
     # Using the model to get predictions
     prediction = model.predict(x_to_predict)
+    print(prediction)
     printInColor(f"Predicted Class: {[np.where(r==1)[0][0] for r in prediction]}")
 
 except:
