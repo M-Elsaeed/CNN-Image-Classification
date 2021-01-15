@@ -2,6 +2,7 @@ import os
 import platform
 import numpy as np
 from cv2 import cv2
+import silence_tensorflow.auto  # pylint: disable=unused-import
 import tensorflow as tf
 from tensorflow import keras
 from keras.utils import to_categorical
@@ -20,8 +21,11 @@ if platform.system() == "Windows":
 
 
 # For colored priniting
-def printInColor(str):
-    print(f"\033[92m{str}\033[0m")
+def printInColor(inStr):
+    if platform.system() == "Windows":
+        print(inStr)
+    else:
+        print(f"\033[92m{inStr}\033[0m")
 
 
 # Takes directory to load images from then saves the read images and labels

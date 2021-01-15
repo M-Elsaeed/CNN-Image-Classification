@@ -2,6 +2,7 @@ import sys
 import platform
 import numpy as np
 from cv2 import cv2
+import silence_tensorflow.auto  # pylint: disable=unused-import
 import tensorflow as tf
 from tensorflow import keras
 
@@ -18,8 +19,11 @@ if platform.system() == "Windows":
 
 
 # For colored priniting
-def printInColor(str):
-    print(f"\033[92m{str}\033[0m")
+def printInColor(inStr):
+    if platform.system() == "Windows":
+        print(inStr)
+    else:
+        print(f"\033[92m{inStr}\033[0m")
 
 
 # Defining out of try/catch scope to be globally accessible
@@ -44,7 +48,8 @@ try:
     if len(sys.argv) > 1:
         imPath = sys.argv[1]
     else:
-        imPath = input(f"\033[92mEnter The Path to the image you want to predict\n\033[0m")
+        printInColor("Enter The Path to the image you want to predict")
+        imPath = input()
 
     x_to_predict = np.array([cv2.imread(imPath)])
     print(x_to_predict.shape)

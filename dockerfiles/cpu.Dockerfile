@@ -22,7 +22,7 @@ RUN ln -s $(which python3) /usr/local/bin/python
 ARG TF_PACKAGE=tensorflow
 ARG TF_PACKAGE_VERSION=
 RUN python3 -m pip install --no-cache-dir ${TF_PACKAGE}${TF_PACKAGE_VERSION:+==${TF_PACKAGE_VERSION}}
-RUN python3 -m pip install opencv-python keras
+RUN python3 -m pip install opencv-python keras silence-tensorflow
 
 COPY bashrc /etc/bash.bashrc
 
