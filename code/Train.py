@@ -85,14 +85,11 @@ def Load_data(directory):
         lbls.dtype.name,
     )
 
-    # dev
-    np.save(f"{rootDir}/imgs", imgs)
-    np.save(f"{rootDir}/lbls", lbls)
-
     # Return The numpy arrays to caller
     return imgs, lbls
 
 
+# Given a 4D array of RGB images of any size, it trains the model and saves it in .h5 format.
 def Train(x_train=None, y_train=None):
 
     # Shuffling the data
@@ -237,7 +234,7 @@ def showIfWindows(model, images, orig_labels):
     else:
         printInColor("Showing Images only works on OS with GUI")
 
-
+# Main Function: Loads the data, then runs the training
 if __name__ == "__main__":
     # Load images and labels
     # Expected shapes are
@@ -246,19 +243,5 @@ if __name__ == "__main__":
     # Where n is the number of images, 28*28 is number of pixels
     # , and 3 is the number of color channels of an RGB image
     # The model is adapted to any image size by modifying its imput layer
-    x_train = None
-    y_train = None
-    # An attempt is made to load from pre-read NPY files
-    try:
-        # dev
-        x_train = np.load(f"{rootDir}/imgs.npy")
-        y_train = np.load(f"{rootDir}/lbls.npy")
-
-        print("DATA LOADED FROM PREREAD NPY FILES")
-    # If no NPY files are found, use the load function
-    except:
-        x_train, y_train = Load_data(f"{rootDir}/trainingSet")
-
-        print("DATA LOADED FROM FILE SYSTEM")
-
+    x_train, y_train = Load_data(f"{rootDir}/trainingSet")
     Train(x_train, y_train)
